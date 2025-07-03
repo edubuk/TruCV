@@ -7,7 +7,7 @@ import advisor4 from '../../assets/Advisor/advisor4.png'
 const OurAdvisor = () => {
   return (
     <div className="flex flex-col justify-center items-center gap-8">
-      <p className="text-[#03257E] text-[25px] sm:text-[40px] md:text-[50px] font-bold uppercase text-center">
+      <p className="text-[#03257E] text-[25px] sm:text-[40px] md:text-[50px] font-bold uppercase text-center" data-aos="fade-up">
         MEET OUR ADVISORS
       </p>
       <div className=" flex justify-center items-center flex-wrap gap-3">
@@ -17,9 +17,10 @@ const OurAdvisor = () => {
               src={advisor1}
               alt="advisor1"
               className="w-full h-full rounded-full object-cover"
+              data-aos="zoom-in"
             />
           </div>
-          <div className="flex flex-col items-center flex-grow">
+          <div className="flex flex-col items-center flex-grow" data-aos="zoom-in">
             <p className="text-lg font-bold text-gray-800 mb-1">Ish Anand</p>
             <p className="bg-gradient-to-r from-[#03257e] via-[#006666] to-[#F14419] text-white text-sm font-semibold px-3 py-1 rounded-full mb-3">
               Serial Entrepreneur, Advisor in Startups, Global Citizen
@@ -47,11 +48,12 @@ const OurAdvisor = () => {
               src={advisor2}
               alt="advisor2"
               className="w-full h-full rounded-full object-cover"
+              data-aos="zoom-in"
             />
           </div>
 
           {/* Content */}
-          <div className="flex flex-col items-center flex-grow">
+          <div className="flex flex-col items-center flex-grow" data-aos="zoom-in">
             <p className="text-lg font-bold text-gray-800 mb-1">
               Dr. Narsing Rao, GS
             </p>
@@ -81,11 +83,12 @@ const OurAdvisor = () => {
               src={advisor3}
               alt="advisor3"
               className="w-full h-full rounded-full object-cover"
+              data-aos="zoom-in"
             />
           </div>
 
           {/* Content */}
-          <div className="flex flex-col items-center flex-grow">
+          <div className="flex flex-col items-center flex-grow" data-aos="zoom-in">
             <p className="text-lg font-bold text-gray-800 mb-1">
               Dr. Sindhu Bhaskar
             </p>
@@ -115,11 +118,12 @@ const OurAdvisor = () => {
               src={advisor4}
               alt="advisor4"
               className="w-full h-full rounded-full object-cover"
+              data-aos="zoom-in"
             />
           </div>
 
           {/* Content */}
-          <div className="flex flex-col items-center flex-grow">
+          <div className="flex flex-col items-center flex-grow" data-aos="zoom-in">
             <p className="text-lg font-bold text-gray-800 mb-1">James Wren</p>
             <p className="bg-gradient-to-r from-[#03257e] via-[#006666] to-[#F14419] text-white text-sm font-semibold px-3 py-1 rounded-full mb-3">
               Lead BD, Liquidium

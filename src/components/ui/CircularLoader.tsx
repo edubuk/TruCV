@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./circularLoader.css";
 
 interface CircularLoaderProps {
-  status: "RUNNING" | "PUBLISHED" | "SUCCESS";
+  status: "INITIATED" | "IN_PROGRESS" | "SUCCESSFUL";
 }
 
 const CircularLoader: React.FC<CircularLoaderProps> = ({ status }) => {
@@ -62,7 +62,7 @@ const CircularLoader: React.FC<CircularLoaderProps> = ({ status }) => {
           <div className="status">
             <span
               style={
-                status === "RUNNING"
+                status === "INITIATED"
                   ? { backgroundColor: "blue"}
                   : {}
               }
@@ -70,18 +70,18 @@ const CircularLoader: React.FC<CircularLoaderProps> = ({ status }) => {
             />
             <p
               style={
-                status === "RUNNING"
+                status === "INITIATED"
                   ? { color: "blue", fontWeight:"bold" }
                   : {}
               }
             >
-              RUNNING
+              INITIATED
             </p>
           </div>
           <div className="status">
             <span
               style={
-                status === "PUBLISHED"
+                status === "IN_PROGRESS"
                   ? { backgroundColor: "#006666" }
                   : {}
               }
@@ -89,18 +89,18 @@ const CircularLoader: React.FC<CircularLoaderProps> = ({ status }) => {
             />
             <p
               style={
-                status === "PUBLISHED"
+                status === "IN_PROGRESS"
                   ? { color: "#006666", fontWeight:"bold" }
                   : {}
               }
             >
-              PUBLISHED
+              IN PROGRESS
             </p>
           </div>
           <div className="status">
             <span
               style={
-                status === "SUCCESS"
+                status === "SUCCESSFUL"
                   ? { backgroundColor: "green" }
                   : {}
               }
@@ -108,12 +108,12 @@ const CircularLoader: React.FC<CircularLoaderProps> = ({ status }) => {
             />
             <p
               style={
-                status === "SUCCESS"
+                status === "SUCCESSFUL"
                   ? { color: "green", fontWeight:"bold" }
                   : {}
               }
             >
-              SUCCESS
+              SUCCESSFUL
             </p>
           </div>
         </div>

@@ -3,18 +3,17 @@ import logo from "../assets/newLogo.png";
 import truCv from "../assets/truCV2.png";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useOkto } from "okto-sdk-react";
-import { GoogleLogin } from "@react-oauth/google";
+import {useOkto,getAccount} from "@okto_web3/react-sdk"
+import { GoogleLogin,googleLogout } from "@react-oauth/google";
 import {
   MdCancel,
   MdContentCopy,
-  MdOutlineAccountBalanceWallet,
 } from "react-icons/md";
 import { LiaNetworkWiredSolid } from "react-icons/lia";
 import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
-//import axios from "axios";
-//import { ethers } from "ethers";
+import { jwtDecode } from "jwt-decode";
+
 
 interface LinkItem {
   path: string;
@@ -28,30 +27,31 @@ interface SidebarProps {
   setLoginModel: React.Dispatch<React.SetStateAction<boolean>>;
   handlerLogout: () => void;
   currentPath: string;
+  oktoClient:any;
 }
 
-interface User {
-  total: number;
-  tokens: Token[];
+interface UserLoginData {
+  email: string;
+  name: string;
+  picture: string;
+  sub: string; // Google user ID
 }
 
-interface Token {
-  token_name: string;
-  quantity: string;
-  amount_in_inr: string;
-  token_image: string;
-  token_address: string;
-  network_name: string;
-}
+// interface User {
+//   total: number;
+//   tokens: Token[];
+// }
 
-interface UserWallet {
-  wallets: Wallet[];
-}
-interface Wallet {
-  network_name: string;
-  address: string;
-  success: boolean;
-}
+// interface Token {
+//   token_name: string;
+//   quantity: string;
+//   amount_in_inr: string;
+//   token_image: string;
+//   token_address: string;
+//   network_name: string;
+// }
+
+
 
 interface NavProps {
   loginModel: boolean;
@@ -61,17 +61,12 @@ interface NavProps {
 const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
   const [isActive, setActive] = useState("/");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [auth, setAuth] = useState<string>();
-  const [userDetails, setUserDetails] = useState<User>();
+  // const [auth, setAuth] = useState<string>();
   const [address, setAddress] = useState<string>();
   const [networkName, setNetworkName] = useState<string>();
-  const {
-    authenticate,
-    getPortfolio,
-    createWallet,
-    getWallets,
-    getUserDetails,
-  } = useOkto();
+  const [showText, setShowText] = useState(false);
+  
+  const oktoClient = useOkto();
   const [openWalletInfo, setOpenWalletInfo] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -83,61 +78,77 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
 
   const fetchUserPortfolio = async () => {
     try {
-      const details: User = await getPortfolio();
-      setUserDetails(details);
-      if (details?.tokens?.length != 0) {
-        const walletInfo = await getWallets();
-        if (walletInfo) {
-          console.log("wallet data", walletInfo);
-          setOpenWalletInfo(true);
-          setAddress(walletInfo.wallets[1]?.address);
-          setNetworkName(details?.tokens[0].network_name);
-        }
-      } else if (!address) {
-        const id = toast.loading("creating new wallet...");
-        const newWallet: UserWallet = await createWallet();
-        if (newWallet?.wallets?.length > 0) {
-          toast.dismiss(id);
-          newWallet.wallets.forEach((wallet) => {
-            if (wallet.network_name === "POLYGON") {
-              setAddress(wallet.address);
-              setNetworkName(wallet.network_name);
-              return;
-            }
-          });
-          toast.success("Wallet setup completed.");
-          setOpenWalletInfo(true);
-        }
-      } else {
+      const accounts= await getAccount(oktoClient);
+      console.log("accounts",accounts)
+      if(accounts?.length>0)
+      {
+        console.log("accounts",accounts)
+        const acc= accounts.find((accs)=>accs.networkName==="POLYGON");
+        setAddress(acc?.address);
+        setNetworkName(acc?.networkName);
         setOpenWalletInfo(true);
       }
-      console.log("user details", details);
+      
     } catch (error) {
       toast.error("something went wrong...");
       console.log("error while fetching user details...", error);
     }
   };
 
-  const handleGoogleLogin = async (credentialResponse: any) => {
-    //console.log("Google login response:", credentialResponse);
-    const idToken = credentialResponse.credential;
-    //console.log("google idtoken: ", idToken);
-    authenticate(idToken, async (authResponse, error) => {
-      if (authResponse) {
-        //console.log("Authentication check: ", authResponse);
-        //setAuthToken(authResponse.auth_token);
-        setAuth(authResponse.auth_token);
-        sessionStorage.setItem("oktoAuthToken", authResponse.auth_token);
-        //console.log("auth token received", authResponse.auth_token);
-        setLoginModel(false);
-        navigate("/");
-      }
-      if (error) {
-        console.error("Authentication error:", error);
-      }
-    });
+     useEffect(() => {
+    if (oktoClient.isLoggedIn()) {
+      console.log("logged in");
+      navigate("/");
+      return;
+    }
+
+    // If not authenticated with Okto, check for stored Google token
+    const storedToken = localStorage.getItem("googleIdToken");
+    if (storedToken) {
+      console.log("storedToken", storedToken);
+      handleAuthenticate(storedToken);
+    }
+    
+  }, [oktoClient.isLoggedIn()]);
+
+
+  const handleAuthenticate = async (idToken: string) => {
+    try {
+      const user = await oktoClient.loginUsingOAuth({
+        idToken: idToken,
+        provider: "google",
+      } , (session: any) => {
+        // Store the session info securely
+        console.log("session", session);
+        localStorage.setItem("okto_session", JSON.stringify(session));
+      });
+      console.log("Authenticated with Okto:", user);
+      const userData:UserLoginData = jwtDecode(idToken);
+      localStorage.setItem("email",userData.email);
+      console.log("userData",userData);
+      setLoginModel(false);
+      navigate("/");
+    } catch (error) {
+      console.error("Authentication failed:", error);
+
+      // Remove invalid token from storage
+      localStorage.removeItem("googleIdToken");
+    }
   };
 
+  // Handles successful Google login
+  // 1. Stores the ID token in localStorage
+  // 2. Initiates Okto authentication
+  const handleGoogleLogin = async (credentialResponse: any) => {
+    const idToken = credentialResponse.credential || "";
+    console.log("idtoken",idToken);
+    if (idToken) {
+      localStorage.setItem("googleIdToken", idToken);
+      handleAuthenticate(idToken);
+    }
+  };
+
+ 
   const copyAddress = async () => {
     try {
       if (address) await navigator.clipboard.writeText(address);
@@ -192,8 +203,16 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
   //   }
 
   const handlerLogout = () => {
-    sessionStorage.clear();
-    window.location.reload();
+    try {
+            googleLogout();    // Perform Google OAuth logout and remove stored token
+            oktoClient.sessionClear();  
+            localStorage.removeItem("googleIdToken");
+            navigate("/");
+            return { result: "Logout success" };
+        } catch (error) {
+            console.error("Logout failed:", error);
+            return { result: "Logout failed" };
+        }
   };
 
   const handlerActive = (linkName: string): void => {
@@ -217,22 +236,22 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
     }
   ];
 
-  const getUserData = async () => {
-    try {
-      const userDetails = await getUserDetails();
-      if (userDetails) {
-        console.log("user-details", userDetails.email);
-        sessionStorage.setItem("userMailId", userDetails.email);
-      }
-    } catch (error) {}
-  };
 
   useEffect(() => {
-    getUserData();
-  }, [auth]);
+    const hasSeenPopup = localStorage.getItem('hasSeenPopup');
+    if (!hasSeenPopup) {
+      setShowText(true);
+      localStorage.setItem('hasSeenPopup', 'true');
+    }
+    
+  }, []);
+
+  // useEffect(() => {
+  //   getUserData();
+  // }, [auth]);
 
   return (
-    <div className="flex justify-between items-center sm:px-3 w-full border-b-2 border-gray-200">
+    <div className="flex justify-between items-center sm:px-3 w-full border-b-2 border-gray-200" data-aos="fade-right">
       <img src={logo} alt="Logo" className="h-20 w-20 sm:h-28 sm:w-28 md:h-32 md:w-32 " />
       <div className="flex gap-2 justify-between items-center">
         <div className=" space-x-4 hidden lg:block">
@@ -249,7 +268,7 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
                 {link.name}
               </Link>
             ) : (
-              sessionStorage.getItem("oktoAuthToken") && (
+              oktoClient.isLoggedIn() && (
                 <Link
                   key={i + 1}
                   to={link.path}
@@ -267,7 +286,7 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
           )}
           
         </div>
-        {!sessionStorage.getItem("oktoAuthToken") ? (
+        {!oktoClient.isLoggedIn() ? (
             <div className="hidden lg:flex relative rounded-full p-[2px] bg-gradient-to-r from-[#03257e] via-[#006666] to-[#f14419]">
               <button
                 onClick={()=>setLoginModel(true)}
@@ -288,7 +307,8 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
           )}
         {/* Hamburger Menu */}
         <div className="flex items-center justify-center gap-2 ml-2">
-          {sessionStorage.getItem("oktoAuthToken") && (
+          {oktoClient.isLoggedIn() && (
+            <div className="relative">
             <div className="relative rounded-full p-[2px] bg-gradient-to-r from-[#03257e] via-[#006666] to-[#f14419]">
               <button
                 onClick={fetchUserPortfolio}
@@ -297,9 +317,21 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
                 View Wallet
               </button>
             </div>
+{showText&&    <div className="relative w-fit mt-2">
+  <div className="absolute flex justify-center flex-col items-center w-[200px] shadow p-2 bg-white z-20 rounded-md gap-2">
+  <p className="text-[#03257e]">
+    Please click on view wallet to setup your wallet before proceeding to{" "}
+    <span className="text-[#f14419]">Create CV</span>
+  </p>
+  <button className="py-1 px-3 bg-[#03257e] text-white rounded-lg" onClick={()=>setShowText(false)}>OK</button>
+  </div>
+  <div className="absolute left-1/2 top-full translate-x-20 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-[#f14419] rotate-180 z-20"></div>
+</div>}
+
+            </div>
           )}
           {openWalletInfo && (
-            <div className="absolute rounded px-6 py-4 flex flex-col justify-start items-start mt-44   mr-10 bg-white z-20 shadow-lg gap-4">
+            <div className="absolute rounded px-6 py-4 flex flex-col justify-start items-start mt-44   mr-10 bg-white z-20 shadow-lg gap-4" data-aso="zoom-in">
               <div className="flex justify-evenly items-center gap-2">
                 <p className="p-2 border border-[#006666] rounded-full  bg-gradient-to-r from-[#03257e] via-[#006666] to-[#f14419]"></p>
                 <p className="text-lg font-bold text-[#006666]">
@@ -316,15 +348,7 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
                   <p className="text-[#03257e] font-medium">{networkName}</p>
                 </div>
               )}
-              {userDetails !== undefined && userDetails?.total > 0 && (
-                <div className="flex justify-center items-center gap-4">
-                  <MdOutlineAccountBalanceWallet className="text-lg text-[#006666] cursor-pointer" />
-                  <p className="text-[#03257e] font-medium">
-                    {userDetails?.tokens[0].quantity?.slice(0, 7)}{" "}
-                    {userDetails?.tokens[0].token_name}
-                  </p>
-                </div>
-              )}
+              
               <button
                 className="flex justify-center items-center gap-4"
                 onClick={copyAddress}
@@ -409,6 +433,7 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
         setLoginModel={setLoginModel}
         handlerLogout={handlerLogout}
         currentPath={currentPath}
+        oktoClient={oktoClient}
       />
       <img src={truCv} alt="trucv-logo" className="w-fit h-16 sm:h-24 md:w-fit md:h-24"></img>
     </div>
@@ -422,6 +447,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   setLoginModel,
   handlerLogout,
   currentPath,
+  oktoClient
 }) => {
   return (
     <div
@@ -444,7 +470,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               {link.name}
             </Link>
           ) : (
-            sessionStorage.getItem("oktoAuthToken") && (
+            oktoClient.isLoggedIn() && (
               <Link
                 key={i + 1}
                 to={link.path}
@@ -458,7 +484,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             )
           )
         )}
-        {!sessionStorage.getItem("oktoAuthToken") ? (
+        {!oktoClient.isLoggedIn() ? (
           <button
             onClick={() => {
               setLoginModel(true);

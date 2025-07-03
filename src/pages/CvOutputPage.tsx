@@ -9,7 +9,7 @@ import { MdSchool } from "react-icons/md";
 // import HyperText from "@/components/ui/AnimateHypertext";
 import ShowVerifications from "@/components/ShowVerifications";
 import { ShowAnimatedVerifications } from "@/components/ShowAnimatedVerifications";
-
+import { Link } from "react-router-dom";
 
 const CvOutputPage = () => {
   const { id } = useParams();
@@ -64,7 +64,7 @@ const CvOutputPage = () => {
       <h1 className="text-md md:text-2xl text-center font-semibold text-[#006666]">
         Verified Curriculum Vitae (CV) on the Blockchain
       </h1>
-      <a className="border border-gray-500 p-2 rounded-lg hover:text-[#006666]" href={`https://www.edubuk.in/new-cv/${id}`}>View Other Template</a>
+      <Link className="border border-gray-500 p-2 rounded-lg hover:text-[#006666]" to={`/new-cv/${id}`}>View Other Template</Link>
       </div>
       <div className="mt-2 max-w-6xl mx-auto w-full border  border-l-0 shadow-lg   rounded-md overflow-x-scroll xl:overflow-x-clip">
         {/* main */}

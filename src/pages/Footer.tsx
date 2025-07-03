@@ -10,7 +10,7 @@ import { FaPhone, FaRegFileAlt } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <div className="flex flex-col bg-white sm:px-4 gap-4 border-b-8 border-[#006666] w-full">
+    <div className="flex flex-col bg-white sm:px-4 gap-4 border-b-8 border-[#006666] w-full" data-aos="fade-up">
       <div className="flex flex-wrap justify-center sm:justify-between items-center gap-8 border-b-2 border-t-2 border-gray-300 pb-3 " >
         <img src="/newLogo.png" alt="logo" className="md:w-[200px] md:h-[200px] w-[152px] h-[152px]"></img>
         <div className="flex flex-col justify-center gap-4 sm:pl-16 ml-10">

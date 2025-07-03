@@ -7,7 +7,7 @@ import team4 from '../../assets/Team/team4.png';
 const OurExecutives = () => {
   return (
     <div className="flex flex-col justify-center items-center gap-8">
-    <p className="text-[#03257E] text-[25px] sm:text-[40px] md:text-[50px] font-bold uppercase text-center">Meet Our executives</p>
+    <p className="text-[#03257E] text-[25px] sm:text-[40px] md:text-[50px] font-bold uppercase text-center" data-aos="fade-up">Meet Our executives</p>
     <div className=" flex justify-center items-center flex-wrap gap-3">
       <div className="w-full max-w-xs min-h-[450px] p-4 bg-gradient-to-br from-gray-100 to-white rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-2 transition duration-300 flex flex-col justify-between items-center text-center">
   <div className="w-28 h-28 mb-4 rounded-full p-1 bg-gradient-to-br from-[#03257e] via-[#006666] to-[#F14419]">
@@ -15,9 +15,10 @@ const OurExecutives = () => {
       src={team1}
       alt="team1"
       className="w-full h-full rounded-full object-cover"
+      data-aos="zoom-in"
     />
   </div>
-  <div className="flex flex-col items-center flex-grow">
+  <div className="flex flex-col items-center flex-grow" data-aos="zoom-in">
     <p className="text-lg font-bold text-gray-800 mb-1">Apoorva Bajaj</p>
     <p className="bg-gradient-to-r from-[#03257e] via-[#006666] to-[#F14419] text-white text-sm font-semibold px-3 py-1 rounded-full mb-3">
       Co-Founder & CEO
@@ -45,11 +46,12 @@ const OurExecutives = () => {
       src={team2}
       alt="team2"
       className="w-full h-full rounded-full object-cover"
+      data-aos="zoom-in"
     />
   </div>
 
   {/* Content */}
-  <div className="flex flex-col items-center flex-grow">
+  <div className="flex flex-col items-center flex-grow" data-aos="zoom-in">
     <p className="text-lg font-bold text-gray-800 mb-1">Shivaani Mehrotra</p>
     <p className="bg-gradient-to-r from-[#03257e] via-[#006666] to-[#F14419] text-white text-sm font-semibold px-3 py-1 rounded-full mb-3">
       Co-Founder & COO
@@ -76,11 +78,12 @@ const OurExecutives = () => {
       src={team3}
       alt="team3"
       className="w-full h-full rounded-full object-cover"
+      data-aos="zoom-in"
     />
   </div>
 
   {/* Content */}
-  <div className="flex flex-col items-center flex-grow">
+  <div className="flex flex-col items-center flex-grow" data-aos="zoom-in">
     <p className="text-lg font-bold text-gray-800 mb-1">Amit Srivastava</p>
     <p className="bg-gradient-to-r from-[#03257e] via-[#006666] to-[#F14419] text-white text-sm font-semibold px-3 py-1 rounded-full mb-3">
       Chief Marketing Officer
@@ -107,11 +110,12 @@ const OurExecutives = () => {
       src={team4}
       alt="Apoorva Bajaj"
       className="w-full h-full rounded-full object-cover"
+      data-aos="zoom-in"
     />
   </div>
 
   {/* Content */}
-  <div className="flex flex-col items-center flex-grow">
+  <div className="flex flex-col items-center flex-grow" data-aos="zoom-in">
     <p className="text-lg font-bold text-gray-800 mb-1">Ajeet Ram Verma</p>
     <p className="bg-gradient-to-r from-[#03257e] via-[#006666] to-[#F14419] text-white text-sm font-semibold px-3 py-1 rounded-full mb-3">
       Tech Lead Developer

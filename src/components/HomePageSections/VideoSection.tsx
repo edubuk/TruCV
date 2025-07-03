@@ -1,6 +1,6 @@
 const VideoSection = () => {
   return (
-    <div className="flex justify-center items-center flex-col w-full">
+    <div className="flex justify-center items-center flex-col w-full" data-aos="zoom-in">
       <div className="flex flex-col justify-center items-center" id="olympiad">
         <p className=" text-[#03257E] text-[25px] sm:text-[40px] md:text-[50px] font-bold text-center">
           Watch How It Works

@@ -10,19 +10,12 @@ import { useFormContext } from "react-hook-form";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import student from "/student.png";
 import employee from "/employee.png";
-
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
-import { app } from "@/firebase";
 import { useState } from "react";
 import SelfAttestButton from "@/components/Buttons/SelfAttest";
 import { useCvFromContext } from "@/context/CvForm.context";
 import { FaGithub, FaInstagram, FaLinkedin, FaTelegram, FaTwitter } from "react-icons/fa";
 import { MdEmail, MdLocationPin, MdPerson, MdPhone } from "react-icons/md";
+import { uploadFile } from "@/uploadFile";
 
 type Props = {
   handleProfessionSelect: (profession: string) => void;
@@ -97,38 +90,58 @@ const PersonalDetails = ({
 
   // const [isImageUploading, setIsImageUploading] = useState<boolean>(false);
   const { personalDetailsVerification: storedVerification } = getValues();
-  const uploadImageToDB = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const uploadImageToDB = async(e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     setImageError("");
     setImagePreview("");
     setIsImageUploading(true);
     setValue("imageFile", e.target.files[0]);
     console.log("imageFile", e.target.files[0]);
-    const storage = getStorage(app);
-    const fileName = new Date().getTime() + e.target.files[0]?.name!;
-    const storageRef = ref(storage, fileName);
-
-    const uploadTask = uploadBytesResumable(storageRef, e.target.files[0]);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        console.log("image upload starting", snapshot);
-      },
-      (error) => {
-        console.log(`Error while uploading to the firebase, ${error}`);
-        setImageError("Could not upload image (file must be less than 2MB)");
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('file',file);
+    console.log("file",file);
+    const response:any = await uploadFile(formData);
+    console.log("Imgres",response);
+    if(response)
+    {
+      if(response.data.success)
+      {
+      setImagePreview(response.data.url);
+      setValue("imageUrl", response.data.url);
+      setIsImageUploading(false);
+      }else if(!response.response.data.success)
+      {
+        setImageError(`Could not upload (${response.response.data.error})`)
         setIsImageUploading(false);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
-          // imageUrl = downloadUrl;
-          // console.log(downloadUrl);
-          setImagePreview(downloadUrl);
-          setValue("imageUrl", downloadUrl);
-          setIsImageUploading(false);
-        });
       }
-    );
+    }
+
+    //const storage = getStorage(app);
+    //const fileName = new Date().getTime() + e.target.files[0]?.name!;
+    //const storageRef = ref(storage, fileName);
+
+    //const uploadTask = uploadBytesResumable(storageRef, e.target.files[0]);
+    // uploadTask.on(
+    //   "state_changed",
+    //   (snapshot) => {
+    //     console.log("image upload starting", snapshot);
+    //   },
+    //   (error) => {
+    //     console.log(`Error while uploading to the firebase, ${error}`);
+    //     setImageError("Could not upload image (file must be less than 2MB)");
+    //     setIsImageUploading(false);
+    //   },
+      // () => {
+      //   getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
+      //     // imageUrl = downloadUrl;
+      //     // console.log(downloadUrl);
+      //     setImagePreview(downloadUrl);
+      //     setValue("imageUrl", downloadUrl);
+      //     setIsImageUploading(false);
+      //   });
+      // }
+    //);
   };
   const handleSelfAttest = (field: keyof PersonalVerificationsType) => {
     setPersonalDetailsVerifications((prev) => ({

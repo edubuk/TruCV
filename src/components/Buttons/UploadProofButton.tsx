@@ -23,7 +23,7 @@ const UploadProofButton = (
         )}
       >
         <Paperclip size={26} className="size-5 mr-3" />{" "}
-        {isUploaded ? <a href={`https://${import.meta.env.VITE_PINATAGATWAY}/ipfs/${ipfsHash}`} target="_blank" >View Proof</a> : "Upload proof"}
+        {isUploaded ? <a href={`${import.meta.env.VITE_AzureGATWAY}/${ipfsHash}`} target="_blank" >View Proof</a> : "Upload proof"}
       </Button>
       <span className={"text-[#006666] font-semibold text-xs text-nowrap"}>
         (png/jpeg/pdf) accepted

@@ -4,7 +4,7 @@ import {instLogos,govLogos,blcLogos,accLogos,mediaLogos,foreignLogos,finLogos } 
 const ImageSlider = () => {
   return (
     <div className="flex justify-center flex-col items-center w-full overflow-hidden">
-  <p className="text-[#03257E] text-[25px] sm:text-[40px] md:text-[50px] font-bold uppercase text-center">
+  <p className="text-[#03257E] text-[25px] sm:text-[40px] md:text-[50px] font-bold uppercase text-center" data-aos="fade-left">
     Awards & Recognitions
   </p>
 

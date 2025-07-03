@@ -2,6 +2,7 @@ import React from "react";
 import { FaPhoneAlt, FaEnvelope, FaLinkedin, FaGithub } from "react-icons/fa";
 import { useGetCv } from "@/api/cv.apis";
 import { useParams } from "react-router-dom";
+import ThreeDotLoader from "@/components/Loader/ThreeDotLoader";
 // import { SiHyperskill } from "react-icons/si";
 // import { FaBriefcase } from "react-icons/fa";
 // import { GiAchievement } from "react-icons/gi";
@@ -31,8 +32,8 @@ const Resume: React.FC = () => {
   console.log(cvData);
   if (isLoading) {
     return(
-    <div className="flex justify-center items-center">
-      <h1 className="text-4xl font-bold text-[#006666]">Loading</h1>
+    <div className="flex justify-center items-center h-[80vh]">
+      <h1 className="text-4xl font-bold text-[#03257e]"><ThreeDotLoader w={4} h={4} yPos={'center'}/></h1>
     </div>
     );
   }

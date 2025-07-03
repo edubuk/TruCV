@@ -10,6 +10,7 @@ import { useFormContext } from "react-hook-form";
 import { Dialog, DialogContent, DialogTrigger } from "./dialog";
 import { FileUpload } from "./file-upload";
 import {uploadToIpfs} from "./PinFileOnPinata";
+import toast from "react-hot-toast";
 // import {sendEmail} from './MailToVerify';
 // import toast from "react-hot-toast";
 // import { Input } from "./input";
@@ -150,40 +151,72 @@ export function AnimatedVerification({
       case "educationVerifications":
         if(field==="class10")
         {
+          if(!firstButtonText || !class10SchoolName)
+          {
+            return toast.error("Please fill all input details correctly before upload the proof")
+          }
           const eduUserData1 = `completing ${firstButtonText} by ${userName} from ${class10SchoolName}`;
         ({ metaDataHash, docHash } = await uploadToIpfs(files[0], setIsUploading,eduUserData1));
         }
         else if(field==="class12")
         {
+          if(!firstButtonText || !class12CollegeName)
+          {
+            return toast.error("Please fill all input details correctly before upload the proof")
+          }
           const eduUserData1 = `completing ${firstButtonText} by ${userName} from ${class12CollegeName}`;
         ({ metaDataHash, docHash } = await uploadToIpfs(files[0], setIsUploading,eduUserData1));
         }
         else if(field==="undergraduation")
         {
+          if(!underGraduateDegreeName || !underGraduateCollegeName)
+          {
+            return toast.error("Please fill all input details correctly before upload the proof")
+          }
           const eduUserData1 = `completing ${underGraduateDegreeName} by ${userName} from ${underGraduateCollegeName}`;
         ({ metaDataHash, docHash } = await uploadToIpfs(files[0], setIsUploading,eduUserData1));
         }
         else if(field==="postgraduation")
         {
+          if(!postGraduateDegreeName || !postGraduateCollegeName)
+          {
+            return toast.error("Please fill all input details correctly before upload the proof")
+          }
           const eduUserData1 = `completing ${postGraduateDegreeName} by ${userName} from ${postGraduateCollegeName}`;
         ({ metaDataHash, docHash } = await uploadToIpfs(files[0], setIsUploading,eduUserData1));
         }
         break;
       case "experienceVerifications":
+        if(!jobRole || !companyName)
+          {
+            return toast.error("Please fill all input details correctly before upload the proof")
+          }
         const userData1 = `completing ${jobRole} job by ${userName} at ${companyName}`;
         ({ metaDataHash, docHash } = await uploadToIpfs(files[0], setIsUploading,userData1));
         break;
 
       case "skillsVerifications":
+        if(!skill)
+          {
+            return toast.error("Please fill all input details correctly before upload the proof")
+          }
         const userData2 = `completing ${skill} skill by ${userName}`;
         ({ metaDataHash, docHash } = await uploadToIpfs(files[0], setIsUploading,userData2));
         break;
 
       case "awardVerifications":
+        if(!awardName || !awardOrg)
+          {
+            return toast.error("Please fill all input details correctly before upload the proof")
+          }
         const userData3 = `receiving ${awardName} certificate by ${userName} at ${awardOrg}`;
         ({ metaDataHash, docHash } = await uploadToIpfs(files[0], setIsUploading,userData3));
         break;
       case "courseVerifications":
+        if(!courseName || !courseOrg)
+          {
+            return toast.error("Please fill all input details correctly before upload the proof")
+          }
         const userData4 = `completing ${courseName} course by ${userName} at ${courseOrg}`;
         ({ metaDataHash, docHash } = await uploadToIpfs(files[0], setIsUploading,userData4));
         break;

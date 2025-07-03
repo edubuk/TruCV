@@ -18,14 +18,13 @@ import { useCV } from "@/api/cv.apis";
 import LoadingButton from "@/components/LoadingButton";
 import { nanoid } from "nanoid";
 import toast from "react-hot-toast";
-import { useOkto } from "okto-sdk-react";
+import { useOkto,getAccount } from "@okto_web3/react-sdk";
 import { ethers } from "ethers";
 import axios from "axios";
 import PaymentPopup from "../paymentGateway/razorpay";
 import { formSchema } from "@/components/FormSchema/formSchema";
+import { oktoAuthTokenGenerator } from "@/oktoUtils/oktoAuthTokenGenerator";
 
-const oktoCW = import.meta.env.VITE_Okto_CW;
-const userId = import.meta.env.VITE_CW_User_Id;
 
 export type CvFormDataType = z.infer<typeof formSchema>;
 
@@ -43,10 +42,10 @@ const CvForm = () => {
   const [formData, setFormData] = useState<FormData>(new FormData());
   const [txHash, setTxHash] = useState<string | null>(null);
   const [txStarted, setTxStarted] = useState<boolean>(false);
-  const { getWallets } = useOkto();
+  const oktoClient = useOkto();
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [paymentStatus, setPaymentStatus] = useState<boolean>(true);
-  const [status, setStatus] = useState<string>("RUNNING");
+  const [status, setStatus] = useState<string>("INITIATED");
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     const nanoId = nanoid(16);
@@ -435,7 +434,7 @@ const CvForm = () => {
     } else if (step === 6) {
       const nanoId = localStorage.getItem("nanoId") ?? "12345678";
       const loginMailId =
-        sessionStorage.getItem("userMailId") ?? "ajeet@gmail.com";
+        localStorage.getItem("email") ?? "ajeet@gmail.com";
       //const userName= sessionStorage.getItem("userName"); // Use a fallback string
       console.log("Form is getting submitted now");
       console.log(currentFormData);
@@ -492,77 +491,114 @@ const CvForm = () => {
   ];
 
   //mint NFT on chain
-  const mintNFT = async () => {
+    const mintNFT = async () => {
     setTxStarted(true);
     const id = toast.loading("Registration started....");
-
-    const iface = new ethers.utils.Interface(abi);
+    const authToken = await oktoAuthTokenGenerator();
+    const accounts= await getAccount(oktoClient);
+    let toAddress= null;
+      console.log("accounts",accounts)
+      if(accounts?.length>0)
+      {
+        console.log("accounts",accounts)
+        const acc= accounts.find((accs:any)=>accs.networkName==="POLYGON");
+        toAddress=acc?.address
+      }
+      console.log("address",toAddress)
+    const arr = localStorage.getItem("hashArray");
+    const uris = arr? JSON.parse(arr): ["bafkreicojn2jmuymgcccwqznmntyyvendd47jwccvtnqpwaung6mvkrrta"];
+    // const uris = [
+    //     "bafkreicojn2jmuymgcccwqznmntyyvendd47jwccvtnqpwaung6mvkrrta",
+    //   ];
+      const iface = new ethers.utils.Interface(abi);
+      const txData = iface.encodeFunctionData("mintMyNFT", [
+        toAddress,
+        uris,
+      ]);
+      console.log("txData",txData)
     try {
-      let toAddress = null;
-      let networkName = null;
       //const twUserId= import.meta.env.VITE_CW_User_Id;
       //const job_id=null;
-      const walletInfo = await getWallets();
-      console.log("wallet info", walletInfo);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      //const walletInfo = await getWallets();
+      //console.log("wallet info", walletInfo);
+      //await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      if (walletInfo.wallets?.length > 0) {
-        walletInfo?.wallets?.forEach((wallet) => {
-          if (wallet.network_name === "POLYGON") {
-            toAddress = wallet.address;
-            networkName = wallet.network_name;
-            console.log("network name", networkName);
-            return;
-          }
-        });
+      // if (walletInfo.wallets?.length > 0) {
+      //   walletInfo?.wallets?.forEach((wallet) => {
+      //     if (wallet.network_name === "POLYGON") {
+      //       toAddress = wallet.address;
+      //       networkName = wallet.network_name;
+      //       console.log("network name", networkName);
+      //       return;
+      //     }
+      //   });
+      // }
+      if (authToken && toAddress) {
+
+        const response = await fetch(
+        "http://localhost:8000/cv/exerawtx",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`
+          },
+          body: JSON.stringify({
+            txData:txData,
+            caip2Id:"eip155:137"
+          }),
+        }
+      );
+
+      const res = await response.json();
+      if(res.jobId===undefined)
+      {
+        return toast.error("something went wrong");
       }
-      if (networkName) {
-        const arr = localStorage.getItem("hashArray");
-        const uris = arr? JSON.parse(arr): ["bafkreicojn2jmuymgcccwqznmntyyvendd47jwccvtnqpwaung6mvkrrta"];
-        // const uris = [
-        //   "bafkreicojn2jmuymgcccwqznmntyyvendd47jwccvtnqpwaung6mvkrrta",
-        // ];
-        // Encode the function data
-        const data = iface.encodeFunctionData("mintMyNFT", [toAddress, uris]);
-
-        const rawExecuteUrl = `${API_BASE_URL}/cv/exerawtx`;
-
-        const res: any = await axios.post(rawExecuteUrl, {
-          network_name: networkName,
-          walletAddress: toAddress,
-          data: data,
-          twUserId: userId,
-          cwAdd: oktoCW,
-        });
+      console.log("tx:", res.jobId);
         // //a2ee394d-027b-4eaf-ae71-14324a6854b7
-        console.log("response", res.data.data.data.orderId);
-        if (res.data.data.data.orderId) {
-          const fetchedOrderId: any = res.data.data.data.orderId;
+        
+        if (res.jobId) {
+          const intentId: any = res.jobId;
+          const intentType="RAW_TRANSACTION";
           //console.log("fetched orderId",fetchedOrderId);
           let count = 0;
           toast.dismiss(id);
           setLoading(true);
           const timer = setInterval(async () => {
-            const statusUrl = `${API_BASE_URL}/cv/get_bulkorder_details/${userId}/${fetchedOrderId}`;
+                  
+      const response = await fetch(
+        `http://localhost:8000/cv/gettxstatus/${intentId}/${intentType}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          }
+        }
+      );
 
-            const orderIdRes = await axios.get(statusUrl);
-            console.log("orderId res", orderIdRes);
+      const statusData = await response.json();
+
+            //const orderIdRes = await axios.get(statusUrl);
+            console.log("orderId res", statusData.currStatus);
             setStatus(
-              orderIdRes.data.data.status as "RUNNING" | "PUBLISHED" | "SUCCESS"
+              statusData.currStatus as "INITIATED" | "IN_PROGRESS" | "SUCCESSFUL" 
             );
             count++;
 
-            if (orderIdRes.data.data[0].status === "SUCCESS") {
+            if (statusData.currStatus === "SUCCESSFUL") {
               toast.dismiss();
               setTxStarted(false);
-              setTxHash(orderIdRes.data.data[0].transaction_hash);
+              if(statusData?.txHash?.length>0)
+              setTxHash(statusData.txHash[0]);
               toast.success("CV Registered Successfully.");
               localStorage.setItem("transactionSuccess", "success");
               clearInterval(timer);
               setLoading(false);
               setPaymentStatus(true);
               return;
-            } else if (orderIdRes.data.data[0].status === "FAILED") {
+            } else if (statusData.currStatus.status === "FAILED") {
               toast.dismiss();
               setTxStarted(false);
               toast.error("Transaction Failed. Please try again");
@@ -581,11 +617,11 @@ const CvForm = () => {
                   </p>
                 </div>
               );
-              setTxHash(orderIdRes.data.data[0].transaction_hash);
+              //setTxHash(orderIdRes.data.data[0].transaction_hash);
               clearInterval(timer);
               setLoading(false);
             }
-          }, 20000);
+          }, 10000);
         }
       }
     } catch (err) {
@@ -718,7 +754,7 @@ const CvForm = () => {
                     >
                       Reset
                     </Button>
-                  ) : (localStorage.getItem("isFreeCoupon") || !paymentStatus) ? (
+                  ) : (!localStorage.getItem("isFreeCoupon") || !paymentStatus) ? (
                     !txHash ? (
                       <Button
                         disabled={txStarted}
@@ -766,7 +802,7 @@ const CvForm = () => {
       {loading && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-100 z-50">
           <CircularLoader
-            status={status as "RUNNING" | "PUBLISHED" | "SUCCESS"}
+            status={status as "INITIATED" | "IN_PROGRESS" | "SUCCESSFUL"}
           />
         </div>
       )}

@@ -1,7 +1,6 @@
 import { CvFormDataType } from "@/forms/CvForm";
 import { API_BASE_URL } from "@/main";
 import { Cv_resoponse_type } from "@/types";
-import axios from "axios";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 
@@ -22,15 +21,15 @@ export const useCV = () => {
     if (!response.ok) {
       throw new Error("Could not create cv at the moment try again latter");
     }
-    if(!localStorage.getItem("isFreeCoupon"))
-    {
-    const paymentId = localStorage.getItem("paymentId");
-    const changeCvStatus = await axios.put(`${API_BASE_URL}/cv/update_cv_status`,{paymentId:paymentId});
-    if(changeCvStatus.data.success)
-    {
-      console.log(changeCvStatus.data.message);
-    }
-  }
+  //   if(!localStorage.getItem("isFreeCoupon"))
+  //   {
+  //   const paymentId = localStorage.getItem("paymentId");
+  //   const changeCvStatus = await axios.put(`${API_BASE_URL}/cv/update_cv_status`,{paymentId:paymentId});
+  //   if(changeCvStatus.data.success)
+  //   {
+  //     console.log(changeCvStatus.data.message);
+  //   }
+  // }
     const localData = localStorage.getItem("AUTH_DETAILS");
     
     //const parseLocalData = JSON.parse(localData!);

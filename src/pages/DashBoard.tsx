@@ -8,6 +8,7 @@ import { useCvFromContext } from "@/context/CvForm.context";
 //import { API_BASE_URL } from "@/main";
 import { contractNFTAddress,abiNFT } from "@/contract/nft.contractData";
 import NFTGallery from "./NFTData";
+import { API_BASE_URL } from "@/main";
 
 const DashBoard = () => {
     const [isActiveButton , setActiveButton] = useState<boolean>(true);
@@ -56,16 +57,18 @@ const DashBoard = () => {
      const fetchIds = async()=>{
       const id=toast.loading("document fetching...")
       try{
-        const loginMailId= sessionStorage.getItem("userMailId");
-        const response = await fetch(`https://edubukcvonchain.net/cv/getCvIds/${loginMailId}`, {
+        const loginMailId= localStorage.getItem("email");
+        const response = await fetch(`${API_BASE_URL}/cv/getCvIds/${loginMailId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
         });
         const data = await response.json();
-        if(data.Ids.length===0)
+        console.log("ids response",data);
+        if(data.success===false)
         {
+          toast.dismiss(id);
           return toast.error("No CV found")
         }
         setCvData(data?.Ids);

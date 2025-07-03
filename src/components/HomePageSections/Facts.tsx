@@ -5,11 +5,11 @@ import fact3 from '@/assets/Facts/fact3.png';
 const Facts = () => {
   return (
     <div className='flex justify-center items-center flex-col gap-4'>
-      <p className="text-[#03257E] text-[25px] sm:text-[40px] md:text-[50px] font-bold uppercase text-center">
+      <p className="text-[#03257E] text-[25px] sm:text-[40px] md:text-[50px] font-bold uppercase text-center" data-aos="fade-right">
         Facts and challenges for employers
       </p>
 <div className="grid grid-cols-2">
-    <div className="relative -ml-56">
+    <div className="relative -ml-56" data-aos="fade-right">
       <img
         src={fakeImg}
         alt="fakeImg"
@@ -23,21 +23,21 @@ const Facts = () => {
       <p className="absolute top-3/4 right-[6%] sm:right-[35%] p-2 bg-white border-4 border-[#03257e] rounded-full w-3 h-3"></p>
     </div>
     <div className='relative'>
-      <div className='absolute flex top-[15%] -ml-[-2%] sm:-ml-[30%] justify-center items-center gap-6'>
+      <div className='absolute flex top-[15%] -ml-[-2%] sm:-ml-[30%] justify-center items-center gap-6' data-aos="fade-left">
       <div className='flex justify-center items-start flex-col'>
         <p className=' text-[#03257e] font-bold text-2xl sm:text-3xl md:text-4xl'>100 MILLION</p>
         <p className=' text-black'>Fake IDs and Credentials Sold Per Year</p>      
         </div>
         <img src={fact1} alt='fact-1' className='hidden sm:flex w-fit h-24'></img>
       </div>
-      <div className='absolute flex top-[41%] -ml-[-5%]  sm:-ml-[30%] justify-center items-center gap-6'>
+      <div className='absolute flex top-[41%] -ml-[-5%]  sm:-ml-[30%] justify-center items-center gap-6' data-aos="fade-left">
       <div className='flex justify-center items-start flex-col'>
         <p className=' text-[#03257e] text-2xl sm:text-3xl md:text-4xl font-bold'>$200 BILLION</p>
         <p className=' text-black'>Fake IDs & Credentials Market Globally as per UNESCO</p>
       </div>
         <img src={fact2} alt='fact-2' className='hidden sm:flex w-fit h-28'></img>
       </div>
-      <div className='absolute top-[74%] -ml-[-4%] sm:-ml-[30%] flex justify-center items-center gap-6'>
+      <div className='absolute top-[74%] -ml-[-4%] sm:-ml-[30%] flex justify-center items-center gap-6' data-aos="fade-left">
       <div className='flex justify-center items-start flex-col'>
         <p className=' text-[#03257e] text-2xl sm:text-3xl md:text-4xl font-bold'>$20 BILLION</p>
         <p className=' text-black'>Academic & Professional Market Share (10%)</p>
@@ -46,7 +46,7 @@ const Facts = () => {
         </div>
     </div>
 </div>
-<p className='p-4 sm:w-[70%] text-xl sm:text-2xl text-black text-center'>Professional networking platforms are already contending with the issue of falsified credentials and with the advent of Generative AI, it is set to amplify further.</p>
+<p className='p-4 sm:w-[70%] text-xl sm:text-2xl text-black text-center' data-aos="fade-up">Professional networking platforms are already contending with the issue of falsified credentials and with the advent of Generative AI, it is set to amplify further.</p>
     </div>
   )
 }

@@ -16,4 +16,8 @@
   transform: rotateY(180deg);
 }
 
+.aos-init[data-aos][data-aos].aos-animate {
+  transform: unset;
+}
+
 
