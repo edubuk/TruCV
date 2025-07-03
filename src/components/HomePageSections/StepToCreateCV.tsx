@@ -20,7 +20,7 @@ const StepToCreateCV = () => {
               Fill a simple form with your details
             </p>
           </div>
-          <div className="w-full flex justify-center items-center sm:-ml-4 order-1 sm:order-2 -rotate-90 sm:rotate-0" data-aos="zoom-in">
+          <div className="w-full flex justify-center items-center sm:-ml-4 order-1 sm:order-2 -rotate-90 sm:rotate-0">
             <RiArrowLeftWideLine className="w-8 h-8  text-[#f14419]"/>
             <div className="relative p-2 flex justify-center items-center w-28 h-28 sm:w-36 sm:h-36 shadow shadow-gray-200 rounded-full border-r-gray-300 border-t-white -rotate-45 border-b-gray-300 border-l-white border-[11px] sm:border-[14px]">
               <p className="text-[#03257e] text-2xl sm:text-3xl font-bold text-center rotate-[135deg] sm:rotate-45">
@@ -37,7 +37,7 @@ const StepToCreateCV = () => {
           <div className="flex justify-center items-center order-3 sm:order-1" data-aos="zoom-in">
             <img src={step2} alt="step1-img" className="w-fit h-16 sm:h-20"></img>
           </div>
-          <div className="w-full flex justify-center items-center sm:ml-4 order-1 sm:order-2 rotate-90 sm:rotate-0" data-aos="zoom-in">
+          <div className="w-full flex justify-center items-center sm:ml-4 order-1 sm:order-2 rotate-90 sm:rotate-0">
             <div className="relative p-2 flex justify-center items-center w-28 h-28 sm:w-36 sm:h-36 shadow shadow-gray-200 rounded-full border-r-white border-l-gray-300 border-t-white rotate-45 border-b-gray-300 border-[11px] sm:border-[14px]">
               <p className="text-[#03257e] text-2xl sm:text-3xl font-bold text-center -rotate-[135deg] sm:-rotate-45">
                 STEP 2
@@ -59,7 +59,7 @@ const StepToCreateCV = () => {
               Our Team will verify them from the Issuer of each Certificate & Credential
             </p>
           </div>
-          <div className="w-full flex justify-center items-center sm:-ml-4 order-1 sm:order-2 -rotate-90 sm:rotate-0" data-aos="zoom-in">
+          <div className="w-full flex justify-center items-center sm:-ml-4 order-1 sm:order-2 -rotate-90 sm:rotate-0" >
             <RiArrowLeftWideLine className="w-8 h-8  text-[#f14419]"/>
             <div className="relative p-2 flex justify-center items-center w-28 h-28 sm:w-36 sm:h-36 shadow shadow-gray-200 rounded-full border-r-gray-300 border-l-white border-t-white -rotate-45 border-b-gray-300 border-[11px] sm:border-[14px]">
               <p className="text-[#03257e] text-2xl sm:text-3xl font-bold text-center rotate-[135deg] sm:rotate-45">
@@ -77,7 +77,7 @@ const StepToCreateCV = () => {
           <div className="flex justify-center items-center order-3 sm:order-1" data-aos="zoom-in">
             <img src={step4} alt="step1-img" className="w-fit h-16 sm:h-20"></img>
           </div>
-          <div className="w-full flex justify-center items-center sm:ml-4 order-1 sm:order-2 rotate-90 sm:rotate-0" data-aos="zoom-in">
+          <div className="w-full flex justify-center items-center sm:ml-4 order-1 sm:order-2 rotate-90 sm:rotate-0" >
             <div className="relative p-2 flex justify-center items-center w-28 h-28 sm:w-36 sm:h-36 shadow shadow-gray-200 rounded-full border-l-gray-300 border-r-white border-t-white rotate-45 border-b-gray-300 border-[11px] sm:border-[14px]">
               <p className="text-[#03257e] text-2xl sm:text-3xl font-bold text-center -rotate-[135deg] sm:-rotate-45">
                 STEP 4
@@ -100,7 +100,7 @@ const StepToCreateCV = () => {
               You can now share your digital verifiable CV with recruiters and get hired globally!
             </p>
           </div>
-          <div className="w-full flex justify-center items-center sm:-ml-4 order-1 sm:order-2 -rotate-90 sm:rotate-0" data-aos="zoom-in">
+          <div className="w-full flex justify-center items-center sm:-ml-4 order-1 sm:order-2 -rotate-90 sm:rotate-0">
             <RiArrowLeftWideLine className="w-8 h-8  text-[#f14419]"/>
             <div className="relative p-2 flex justify-center items-center w-28 h-28 sm:w-36 sm:h-36 shadow shadow-gray-200 rounded-full border-r-gray-300 border-t-white -rotate-45 border-b-gray-300 border-l-white border-[11px] sm:border-[14px]">
               <p className="text-[#03257e] text-2xl sm:text-3xl font-bold text-center rotate-[135deg] sm:rotate-45">
