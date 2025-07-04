@@ -35,4 +35,4 @@ createRoot(document.getElementById("root")!).render(
     </QueryClientProvider>
   </StrictMode>
 );
-export const API_BASE_URL = import.meta.env.VITE_BACKNED_URL;
+export const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;

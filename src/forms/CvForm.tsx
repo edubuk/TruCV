@@ -463,11 +463,8 @@ const CvForm = () => {
     }
   };
 
-  console.log("step- ", step);
-  // console.log(form.formState.errors);
-  // const onSubmit = (formDataJson: CvFormDataType) => {
-  //   console.log("Submitted form data", formDataJson);
-  // };
+  //console.log("step- ", step);
+
 
   const abi = [
     {
@@ -507,36 +504,19 @@ const CvForm = () => {
       console.log("address",toAddress)
     const arr = localStorage.getItem("hashArray");
     const uris = arr? JSON.parse(arr): ["bafkreicojn2jmuymgcccwqznmntyyvendd47jwccvtnqpwaung6mvkrrta"];
-    // const uris = [
-    //     "bafkreicojn2jmuymgcccwqznmntyyvendd47jwccvtnqpwaung6mvkrrta",
-    //   ];
+
       const iface = new ethers.utils.Interface(abi);
       const txData = iface.encodeFunctionData("mintMyNFT", [
         toAddress,
         uris,
       ]);
-      console.log("txData",txData)
+      //console.log("txData",txData)
     try {
-      //const twUserId= import.meta.env.VITE_CW_User_Id;
-      //const job_id=null;
-      //const walletInfo = await getWallets();
-      //console.log("wallet info", walletInfo);
-      //await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // if (walletInfo.wallets?.length > 0) {
-      //   walletInfo?.wallets?.forEach((wallet) => {
-      //     if (wallet.network_name === "POLYGON") {
-      //       toAddress = wallet.address;
-      //       networkName = wallet.network_name;
-      //       console.log("network name", networkName);
-      //       return;
-      //     }
-      //   });
-      // }
       if (authToken && toAddress) {
 
         const response = await fetch(
-        "http://localhost:8000/cv/exerawtx",
+        `${API_BASE_URL}/cv/exerawtx`,
         {
           method: "POST",
           headers: {
@@ -568,7 +548,7 @@ const CvForm = () => {
           const timer = setInterval(async () => {
                   
       const response = await fetch(
-        `http://localhost:8000/cv/gettxstatus/${intentId}/${intentType}`,
+        `${API_BASE_URL}/cv/gettxstatus/${intentId}/${intentType}`,
         {
           method: "GET",
           headers: {
@@ -592,6 +572,7 @@ const CvForm = () => {
               setTxStarted(false);
               if(statusData?.txHash?.length>0)
               setTxHash(statusData.txHash[0]);
+              localStorage.setItem("txHash", statusData.txHash[0]);
               toast.success("CV Registered Successfully.");
               localStorage.setItem("transactionSuccess", "success");
               clearInterval(timer);
@@ -754,8 +735,8 @@ const CvForm = () => {
                     >
                       Reset
                     </Button>
-                  ) : (!localStorage.getItem("isFreeCoupon") || !paymentStatus) ? (
-                    !txHash ? (
+                  ) : (localStorage.getItem("isFreeCoupon") || !paymentStatus) ? (
+                    !(txHash || localStorage.getItem("txHash")) ? (
                       <Button
                         disabled={txStarted}
                         type="button"
@@ -772,7 +753,7 @@ const CvForm = () => {
                       <div className="flex justify-center items-center w-auto sm:w-full">
                         <a
                           className="w-full px-2 py-1 text-center items-center border rounded hover:bg-[#f8f9fa] font-semibold hover:opacity-90"
-                          href={`https://polygonscan.com/tx/${txHash}`}
+                          href={`https://polygonscan.com/tx/${txHash || localStorage.getItem("txHash")}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

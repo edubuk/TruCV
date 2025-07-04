@@ -19,6 +19,7 @@ const ContactUs = lazy(() => import("./pages/ContactUs"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 import AOS from "aos";
 import "aos/dist/aos.css";
+import AppPrivacyPolicy from "./pages/AppPrivacy";
 
 function App() {
 
@@ -52,6 +53,7 @@ function App() {
               <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
               <Route path="/cancellation-policy" element={<CancellationPolicy />} />
               <Route path="/contact-us" element={<ContactUs />} />
+              <Route path="/app-privacy-policy" element={<AppPrivacyPolicy />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                  <Route path="/create-cv" element={<HomePage />} />
                 <Route path="/dashboard" element={<DashBoard />} />

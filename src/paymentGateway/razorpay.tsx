@@ -20,7 +20,8 @@ interface payload {
 
 const PaymentPopup: React.FC<Props> = ({ showPopup, setShowPopup}) => {
   const [coupon, setCoupon] = useState<string>("");
-  const [amount, setAmount] = useState<number>(89);
+  const [errorMsg,setErrorMsg] = useState<string>("");
+  const [amount, setAmount] = useState<number>(599);
   const [isCouponValid, setCouponValid] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -118,6 +119,8 @@ const PaymentPopup: React.FC<Props> = ({ showPopup, setShowPopup}) => {
         }
       } else {
         setAmount(res.data.value);
+        setErrorMsg("Invalid coupon code");
+        setCouponValid(false);
       }
     } catch (error) {
       console.log("error while coupon verification");
@@ -184,14 +187,14 @@ const PaymentPopup: React.FC<Props> = ({ showPopup, setShowPopup}) => {
                       Apply
                     </button>
                   </div>
-                  {coupon?.length > 0 && amount === 499 && (
+                  {coupon?.length > 0 && amount === 599 && (
                     <p className="absolute text-[red] bottom-[0.01rem]">
-                      code is invalid
+                      {errorMsg}
                     </p>
                   )}
                   {isCouponValid && (
                     <p className="absolute text-[#ff6a00] bottom-[0.01rem]">
-                      valid till 28 Feb 2025
+                      valid till 30 JULY 2025
                     </p>
                   )}
                 </div>
@@ -200,10 +203,10 @@ const PaymentPopup: React.FC<Props> = ({ showPopup, setShowPopup}) => {
                     <strong>₹</strong>
                     {isCouponValid ? (
                       <strong className="text-[#006666]">
-                        <del>499</del> 89
+                        <del>599</del> 89
                       </strong>
                     ) : (
-                      <strong className="text-[#006666]">499</strong>
+                      <strong className="text-[#006666]">599</strong>
                     )}{" "}
                     Only
                   </p>
