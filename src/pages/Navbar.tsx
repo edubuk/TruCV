@@ -61,6 +61,7 @@ interface NavProps {
 const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
   const [isActive, setActive] = useState("/");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [loading,setLoading] = useState(false);
   // const [auth, setAuth] = useState<string>();
   const [address, setAddress] = useState<string>();
   const [networkName, setNetworkName] = useState<string>();
@@ -109,7 +110,7 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
       handleAuthenticate(storedToken);
     }
     
-  }, [oktoClient.isLoggedIn()]);
+  }, [loginModel]);
 
 
   const handleAuthenticate = async (idToken: string) => {
@@ -125,11 +126,13 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
       console.log("Authenticated with Okto:", user);
       const userData:UserLoginData = jwtDecode(idToken);
       localStorage.setItem("email",userData.email);
-      console.log("userData",userData);
+      //console.log("userData",userData);
       setLoginModel(false);
+      setLoading(false);
       navigate("/");
     } catch (error) {
       console.error("Authentication failed:", error);
+      setLoading(false);
 
       // Remove invalid token from storage
       localStorage.removeItem("googleIdToken");
@@ -140,6 +143,7 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
   // 1. Stores the ID token in localStorage
   // 2. Initiates Okto authentication
   const handleGoogleLogin = async (credentialResponse: any) => {
+    setLoading(true);
     const idToken = credentialResponse.credential || "";
     console.log("idtoken",idToken);
     if (idToken) {
@@ -414,13 +418,13 @@ const Navbar:React.FC<NavProps> = ({loginModel,setLoginModel}) => {
     />
 
     {/* Close Button */}
-    <button
+    {loading?<p className="mt-2 px-4 py-2 bg-white text-[#03257e] font-semibold rounded text-center">Please Wait...</p>:<button
       onClick={hidePopup}
       className="mt-2 px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600 transition"
       aria-label="Close Google login modal"
     >
       Close
-    </button>
+    </button>}
   </div>
 </div>
 
