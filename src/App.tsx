@@ -53,7 +53,7 @@ function App() {
               <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
               <Route path="/cancellation-policy" element={<CancellationPolicy />} />
               <Route path="/contact-us" element={<ContactUs />} />
-              <Route path="/app-privacy-policy" element={<AppPrivacyPolicy />} />
+              <Route path="/pprivacy-policy" element={<AppPrivacyPolicy />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                  <Route path="/create-cv" element={<HomePage />} />
                 <Route path="/dashboard" element={<DashBoard />} />
